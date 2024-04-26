@@ -1,9 +1,12 @@
-#define LEFT_WIRE A15
-#define RIGHT_WIRE A16
-#define UP_WIRE A13
-#define DOWN_WIRE A14
-#define TRIG 5
-#define ECHO 16
+#define LEFT_WIRE A15 // White
+#define RIGHT_WIRE A13 // Purple
+#define UP_WIRE A14 // Brown
+#define DOWN_WIRE A16 // Yellow
+#define TRIG1 5
+#define ECHO1 16
+#define TRIG2 A4
+#define ECHO2 A5
+
 
 void setup(){
   Serial.begin(9600);
@@ -11,13 +14,17 @@ void setup(){
   pinMode(RIGHT_WIRE, OUTPUT);
   pinMode(UP_WIRE, OUTPUT);
   pinMode(DOWN_WIRE, OUTPUT);
-  pinMode(TRIG, OUTPUT); // set up distance sensor pins
-  pinMode(ECHO, INPUT);
-  digitalWrite(TRIG, LOW);
+  
+  pinMode(TRIG1, OUTPUT); // set up distance1 sensor pins
+  pinMode(ECHO1, INPUT);
+  digitalWrite(TRIG1, LOW);
+  pinMode(TRIG2, OUTPUT); // set up distance2 sensor pins
+  pinMode(ECHO2, INPUT);
+  digitalWrite(TRIG2, LOW);
 }
 
 // read distance sensor, return centimeters
-float readDistance() {
+float readDistance(int TRIG, int ECHO) {
   digitalWrite(TRIG, LOW); delayMicroseconds(2);
   digitalWrite(TRIG, HIGH); delayMicroseconds(10);
   digitalWrite(TRIG, LOW);
@@ -31,10 +38,12 @@ float readDistance() {
 }
 
 void loop(){
-  float dist = readDistance();
-  Serial.println(dist);
+  float dist1 = readDistance(TRIG1, ECHO1);
+  float dist2 = readDistance(TRIG2, ECHO2);
+  Serial.println(dist1);
+  Serial.println(dist2);
   digitalWrite(UP_WIRE, HIGH);
-  if (dist < 20){
+  if (dist1 < 20 || dist2 < 20){
     digitalWrite(UP_WIRE, LOW);
   }
 
@@ -49,6 +58,11 @@ void loop(){
 //  digitalWrite(DOWN_WIRE, HIGH);
 //  delay(1000);
 //  digitalWrite(DOWN_WIRE, LOW);
+//  delay(2000);
+//
+//  digitalWrite(UP_WIRE, HIGH);
+//  delay(1000);
+//  digitalWrite(UP_WIRE, LOW);
 //  delay(2000);
   
 }
