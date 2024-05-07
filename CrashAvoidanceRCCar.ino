@@ -14,19 +14,18 @@
 #define TRIG3 17
 #define ECHO3 5
 
-#define D1 32
-#define D0 33
+#define DI 32
 
 #define ringshow_noglitch() {delay(1);ring.show();delay(1);ring.show();}
 
-Adafruit_NeoPixel ring = Adafruit_NeoPixel(16, D0, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ring = Adafruit_NeoPixel(16, DI, NEO_GRB + NEO_KHZ800);
 
 
 typedef struct joystick_input {
   int x; // from -1800 to 1800
   int y; // from -1800 to 1800
   // deadzone from -110 to 100
-  bool control; // initial value false, clicking button flips boolean
+  bool control; // initial value 1
 } joystick_input;
 
 joystick_input joystick_data;
@@ -109,15 +108,15 @@ float readDistance(int TRIG, int ECHO) {
 // calls readDistance a certain amount of time 
 float averageDistance(int TRIG, int ECHO){
   unsigned long totalLapse = 0;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 3; i++) {
     totalLapse += readDistance(TRIG, ECHO);
   }
-  return totalLapse / 5;
+  return totalLapse / 3;
 }
 
 void updateMotors(joystick_input joystick_data, float dist1, float dist2, float dist3){
   // Check if any distance sensor reads below 20
-  bool obstacleDetected = (dist1 < 30) || (dist2 < 20) || (dist3 < 20);
+  bool obstacleDetected = (dist1 < 50) || (dist2 < 20) || (dist3 < 20);
 
    // If obstacle detected, stop all motor movements
    if (obstacleDetected && joystick_data.control) {
@@ -130,7 +129,7 @@ void updateMotors(joystick_input joystick_data, float dist1, float dist2, float 
 
   // Map joystick input to PWM duty cycle
   int dutyX = map(abs(joystick_data.x), 0, 1800, 0, 255);
-  int dutyY = map(abs(joystick_data.y), 0, 1800, 0, 200);
+  int dutyY = map(abs(joystick_data.y), 0, 1800, 0, 150);
   
   if (joystick_data.x < 0){
     ledcWrite(3, 0);
@@ -159,13 +158,17 @@ void updateMotors(joystick_input joystick_data, float dist1, float dist2, float 
 }
 
 void loop(){
-//  float dist1 = averageDistance(TRIG1, ECHO1);
-//  float dist2 = averageDistance(TRIG2, ECHO2);
-//  float dist3 = averageDistance(TRIG3, ECHO3);
-//  updateMotors(joystick_data, dist1, dist2, dist3);
+  float dist1 = averageDistance(TRIG1, ECHO1);
+  float dist2 = averageDistance(TRIG2, ECHO2);
+  float dist3 = averageDistance(TRIG3, ECHO3);
+  updateMotors(joystick_data, dist1, dist2, dist3);
 
   for(int i=0; i < ring.numPixels(); i++) {
-    ring.setPixelColor(i, ring.Color(255, 0, 0));  
+    if (joystick_data.control){
+      ring.setPixelColor(i, ring.Color(0, 255, 0));  
+    } else {
+      ring.setPixelColor(i, ring.Color(255, 0, 0));  
+    }
   }
   ringshow_noglitch();
 
