@@ -10,7 +10,3 @@ Current goals
      3.1) Figure out method to connect various ultrasound sensors to the ESP32 board
   4) Create proper body for the actual physical car, and make sure it is structurally sound and capable of withstanding collisions as that will be likely occuring often
 
-Back - Yellow \
-Forward - Brown \
-Left - White \
-Right - Purple  
