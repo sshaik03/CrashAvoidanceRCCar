@@ -4,8 +4,9 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Arduino.h>
+//24:DC:C3:45:A0:3C
 
-uint8_t broadcastAddress1[] = {0xC4, 0xDD, 0x57, 0x8E, 0x29, 0x28};
+uint8_t broadcastAddress1[] = {0x24, 0xDC, 0xC3, 0x45, 0xA0, 0x3C};
 
 typedef struct joystick_input {
   int x;

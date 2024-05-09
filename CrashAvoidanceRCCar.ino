@@ -7,6 +7,7 @@
 #define RIGHT_WIRE 12 // Turquoise - 2
 #define UP_WIRE 14 // Red - 3, yellow  25
 #define DOWN_WIRE 27 // Black - 4, black
+
 #define TRIG1 15
 #define ECHO1 2
 #define TRIG2 16
@@ -15,9 +16,7 @@
 #define ECHO3 5
 
 #define DI 32
-
 #define ringshow_noglitch() {delay(1);ring.show();delay(1);ring.show();}
-
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(16, DI, NEO_GRB + NEO_KHZ800);
 
 
@@ -59,7 +58,7 @@ void setup(){
   pinMode(RIGHT_WIRE, OUTPUT);
   pinMode(UP_WIRE, OUTPUT);
   pinMode(DOWN_WIRE, OUTPUT);
-//  Serial.println(WiFi.macAddress());
+  Serial.println(WiFi.macAddress());
   
   pinMode(TRIG1, OUTPUT); // set up distance1 sensor pins
   pinMode(ECHO1, INPUT);
@@ -111,12 +110,11 @@ float averageDistance(int TRIG, int ECHO){
   for (int i = 0; i < 3; i++) {
     totalLapse += readDistance(TRIG, ECHO);
   }
-  return totalLapse / 3;
+  return totalLapse / 4;
 }
 
 void updateMotors(joystick_input joystick_data, float dist1, float dist2, float dist3){
-  // Check if any distance sensor reads below 20
-  bool obstacleDetected = (dist1 < 50) || (dist2 < 20) || (dist3 < 20);
+  bool obstacleDetected = (dist1 < 4) || (dist2 < 30) || (dist3 < 4);
 
    // If obstacle detected, stop all motor movements
    if (obstacleDetected && joystick_data.control) {
